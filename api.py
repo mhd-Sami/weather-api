@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, render_template
 import requests
 from flask_cors import CORS  # Import CORS
 
@@ -7,6 +7,10 @@ CORS(app)  # Enable CORS for all routes
 
 API_KEY = '5ccc694960fa44a14945d4e559ed8b98'
 BASE_URL = 'http://api.openweathermap.org/data/2.5/weather'
+
+@app.route('/')
+def index():
+    return render_template('index.html')
 
 @app.route('/api/weather', methods=['GET'])
 def get_weather():
@@ -31,7 +35,7 @@ def get_weather():
         return jsonify({"error": "City not found"}), 404
 
 if __name__ == '__main__':
-    app.run(port=5000, debug=True)
+    app.run(host='0.0.0.0', port=5000, debug=True)
 
 
 
