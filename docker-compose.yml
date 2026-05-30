@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+  # API service (main weather API)
+  api:
+    build: .
+    container_name: weather-api
+    ports:
+      - "5000:5000"
+    environment:
+      - FLASK_APP=api.py
+      - FLASK_ENV=production
+    command: python api.py
+    restart: unless-stopped
+    networks:
+      - weather-network
+
+  # Server service (Web UI)
+  server:
+    build: .
+    container_name: weather-server
+    ports:
+      - "5001:5001"
+    environment:
+      - FLASK_APP=server.py
+      - FLASK_ENV=production
+    command: python server.py
+    restart: unless-stopped
+    networks:
+      - weather-network
+    depends_on:
+      - api
+
+networks:
+  weather-network:
+    driver: bridge
