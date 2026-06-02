@@ -3,107 +3,497 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Weather App</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <title>Atmosphere &mdash; Professional Weather Dashboard</title>
+    <!-- Fonts for editorial typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+    <!-- Phosphor Icons for elegant minimalist icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
     <style>
-        body {
-            font-family: Arial, sans-serif;
+        :root {
+            /* Light theme with warmth and depth per preferences */
+            --bg-color: #F2EFE9; /* Warm editorial alabaster/cream */
+            --text-main: #1E1C1B; /* Deep charcoal */
+            --text-muted: #736E68; /* Warm gray */
+            --border-color: #D4CDC4; /* Visible but elegant divider */
+            --glass-bg: rgba(242, 239, 233, 0.6);
+            --accent: #9C6C42; /* Professional muted terra-cotta/bronze */
+        }
+        
+        * {
+            box-sizing: border-box;
             margin: 0;
-            padding: 20px;
-            background-color: #f4f4f4;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            font-weight: 300;
+            line-height: 1.6;
+            min-height: 100vh;
             display: flex;
             flex-direction: column;
             align-items: center;
+            position: relative;
+            overflow-x: hidden;
         }
 
-        h1 {
-            color: #333;
-            margin-bottom: 20px;
+        /* Ambient Glow Effect - tuned for light mode */
+        body::before {
+            content: "";
+            position: absolute;
+            top: -10vh;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80vw;
+            height: 50vh;
+            background: radial-gradient(circle, rgba(156, 108, 66, 0.04) 0%, rgba(242, 239, 233, 0) 70%);
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        /* Glassy Header, non-sticky */
+        header {
+            width: 100%;
+            padding: 30px 40px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: center;
+            position: relative; 
+            z-index: 10;
+        }
+
+        .header-content {
+            width: 100%;
+            max-width: 1000px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.6rem;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: var(--text-main);
+        }
+        
+        .logo i {
+            color: var(--accent);
+            font-size: 2rem;
+        }
+
+        main {
+            width: 100%;
+            max-width: 1000px;
+            padding: 60px 40px;
+            flex-grow: 1;
+            position: relative;
+            z-index: 1;
+        }
+
+        .search-section {
+            margin-bottom: 50px;
+            padding-bottom: 50px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+
+        @media (min-width: 768px) {
+            .search-section {
+                flex-direction: row;
+                justify-content: space-between;
+                align-items: flex-end;
+            }
+        }
+
+        .search-title-group {
+            flex-shrink: 0;
+        }
+
+        .search-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 2.8rem;
+            font-weight: 400;
+            color: var(--text-main);
+            line-height: 1.1;
+        }
+
+        .search-subtitle {
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            margin-top: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
         }
 
         form {
             display: flex;
-            margin-bottom: 20px;
+            flex-direction: column;
+            gap: 20px;
+            width: 100%;
+            max-width: 450px;
         }
 
-        input[type="text"] {
-            padding: 10px;
-            font-size: 16px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            width: 250px;
-            margin-right: 10px;
+        @media (min-width: 480px) {
+            form {
+                flex-direction: row;
+                align-items: flex-end;
+            }
+        }
+
+        .input-group {
+            position: relative;
+            display: flex;
+            align-items: center;
+            flex-grow: 1;
+        }
+
+        .input-group i {
+            position: absolute;
+            left: 0;
+            font-size: 1.4rem;
+            color: var(--text-muted);
+            transition: color 0.3s ease;
+        }
+
+        .input-group input {
+            width: 100%;
+            background: transparent;
+            border: none;
+            border-bottom: 1px solid var(--border-color);
+            padding: 12px 0 12px 35px;
+            font-size: 1.1rem;
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            font-weight: 400;
+            outline: none;
+            transition: border-color 0.3s ease;
+        }
+
+        .input-group input::placeholder {
+            color: var(--text-muted);
+            font-weight: 300;
+        }
+
+        .input-group input:focus {
+            border-bottom-color: var(--accent);
+        }
+
+        .input-group input:focus + i, .input-group input:not(:placeholder-shown) + i {
+            color: var(--accent);
         }
 
         button {
-            padding: 10px 15px;
-            font-size: 16px;
-            border: none;
-            border-radius: 5px;
-            background-color: #007bff;
-            color: white;
+            flex-shrink: 0;
+            align-self: flex-start;
+            background: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            padding: 12px 28px;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
             cursor: pointer;
-            transition: background-color 0.3s;
+            transition: all 0.3s ease;
+            border-radius: 2px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            height: 47px; /* Align with input */
         }
 
-        button:hover {
-            background-color: #0056b3;
+        @media (min-width: 480px) {
+            button {
+                align-self: flex-end;
+            }
         }
 
-        .result {
-            margin-top: 20px;
-            padding: 20px;
-            border-radius: 5px;
-            background-color: white;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            width: 300px;
-            text-align: center;
+        button:hover:not(:disabled) {
+            background: var(--text-main);
+            color: var(--bg-color);
+            border-color: var(--text-main);
+        }
+        
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
         }
 
-        .error {
-            color: red;
+        /* Loading spinner */
+        .spinner {
+            display: none;
+            width: 14px;
+            height: 14px;
+            border: 2px solid rgba(0, 0, 0, 0.2);
+            border-radius: 50%;
+            border-top-color: currentColor;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        button.loading .spinner {
+            display: block;
+        }
+
+        /* Result Section - Dashboard Layout */
+        .result-container {
+            opacity: 0;
+            transform: translateY(10px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+
+        .result-container.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .dashboard-layout {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 60px;
+        }
+
+        @media (min-width: 768px) {
+            .dashboard-layout {
+                grid-template-columns: 1fr 1fr;
+                gap: 80px;
+            }
+        }
+
+        .weather-primary {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .weather-condition-icon {
+            font-size: 6rem;
+            color: var(--accent);
+            opacity: 0.95;
+            margin-bottom: 10px;
+        }
+
+        .weather-city {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 4rem;
+            font-weight: 400;
+            line-height: 1;
+            margin-bottom: 5px;
+        }
+
+        .weather-status {
+            color: var(--text-main);
+            font-size: 1.4rem;
+            text-transform: capitalize;
+            font-family: 'Cormorant Garamond', serif;
+            font-style: italic;
+        }
+
+        .metrics-title {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text-muted);
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--text-main); /* Stronger focal divider */
+        }
+
+        .weather-list {
+            list-style: none;
+        }
+
+        .weather-list li {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 24px 0;
+            border-bottom: 1px solid var(--border-color);
+            transition: background-color 0.3s ease, padding-left 0.3s ease;
+        }
+        
+        .weather-list li:hover {
+            background-color: rgba(0, 0, 0, 0.02);
+            padding-left: 10px;
+        }
+
+        .weather-list .label-wrap {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: var(--text-muted);
+        }
+        
+        .weather-list .label-wrap i {
+            font-size: 1.3rem;
+            color: var(--accent);
+        }
+
+        .weather-list .label {
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            font-size: 0.85rem;
+        }
+
+        .weather-list .value {
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: var(--text-main);
+        }
+
+        .error-msg {
+            color: #b73a36;
+            font-style: italic;
+            margin-top: 15px;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.3rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
     </style>
 </head>
 <body>
-    <h1>Weather Forecast</h1>
- 
 
-    <form id="weatherForm">
-        <input type="text" id="city" placeholder="Enter city name" required>
-        <button type="submit">Get Weather</button>
-    </form>
-    <div class="result" id="result"></div>
-    
-    
+    <header>
+        <div class="header-content">
+            <div class="logo">
+                <i class="ph-light ph-cloud-sun"></i>
+                Atmosphere Dashboard
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <div class="search-section">
+            <h1 class="search-title">Current Conditions</h1>
+            <form id="weatherForm">
+                <div class="input-group">
+                    <input type="text" id="city" placeholder="Enter a city name..." autocomplete="off" required>
+                    <i class="ph-light ph-map-pin"></i>
+                </div>
+                <button type="submit" id="submitBtn">
+                    <span class="spinner"></span>
+                    <span class="btn-text">Discover</span>
+                </button>
+            </form>
+        </div>
+
+        <div id="result" class="result-container">
+            <!-- Results injected here via JS -->
+        </div>
+    </main>
+
     <script>
+        // Helper function to pick an icon based on weather description
+        function getWeatherIcon(description) {
+            const desc = description.toLowerCase();
+            if (desc.includes('cloud')) return 'ph-cloud';
+            if (desc.includes('rain') || desc.includes('drizzle')) return 'ph-cloud-rain';
+            if (desc.includes('snow')) return 'ph-snow';
+            if (desc.includes('thunder')) return 'ph-cloud-lightning';
+            if (desc.includes('clear')) return 'ph-sun';
+            return 'ph-cloud-sun';
+        }
+
         document.getElementById('weatherForm').addEventListener('submit', function(event) {
             event.preventDefault();
             const city = document.getElementById('city').value;
-            fetch(`/api/weather?city=${city}`)
-                .then(response => response.json())
-                .then(data => {
-                    const resultDiv = document.getElementById('result');
-                    if (data.error) {
-                        resultDiv.innerHTML = `<p class="error">${data.error}</p>`;
-                    } else {
-                        resultDiv.innerHTML = `
-                            <h2>Weather in ${data.city}</h2>
-                            <p><i class="fas fa-thermometer-half"></i> Temperature: ${data.temperature} °C</p>
-                            <p><i class="fas fa-cloud-sun"></i> Description: ${data.description}</p>
-                            <p><i class="fas fa-tint"></i> Humidity: ${data.humidity}%</p>
-                            <p><i class="fas fa-wind"></i> Wind Speed: ${data.wind_speed} m/s</p>
-                        `;
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                });
+            const resultContainer = document.getElementById('result');
+            const submitBtn = document.getElementById('submitBtn');
+            const btnText = submitBtn.querySelector('.btn-text');
+            
+            // UI Loading state
+            submitBtn.disabled = true;
+            submitBtn.classList.add('loading');
+            btnText.textContent = 'Discovering...';
+            resultContainer.classList.remove('visible');
+            
+            setTimeout(() => {
+                fetch(`/api/weather?city=${city}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        // Reset button
+                        submitBtn.disabled = false;
+                        submitBtn.classList.remove('loading');
+                        btnText.textContent = 'Discover';
+
+                        if (data.error) {
+                            resultContainer.innerHTML = `<p class="error-msg"><i class="ph-light ph-warning"></i>${data.error}</p>`;
+                        } else {
+                            const iconClass = getWeatherIcon(data.description);
+                            resultContainer.innerHTML = `
+                                <div class="dashboard-layout">
+                                    <div class="weather-primary">
+                                        <i class="ph-light ${iconClass} weather-condition-icon"></i>
+                                        <div class="weather-info-main">
+                                            <h2 class="weather-city">${data.city}</h2>
+                                            <p class="weather-status">${data.description}</p>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="weather-metrics">
+                                        <h3 class="metrics-title">Conditions</h3>
+                                        <ul class="weather-list">
+                                            <li>
+                                                <div class="label-wrap">
+                                                    <i class="ph-light ph-thermometer"></i>
+                                                    <span class="label">Temperature</span>
+                                                </div>
+                                                <span class="value">${data.temperature} &deg;C</span>
+                                            </li>
+                                            <li>
+                                                <div class="label-wrap">
+                                                    <i class="ph-light ph-drop"></i>
+                                                    <span class="label">Humidity</span>
+                                                </div>
+                                                <span class="value">${data.humidity}%</span>
+                                            </li>
+                                            <li>
+                                                <div class="label-wrap">
+                                                    <i class="ph-light ph-wind"></i>
+                                                    <span class="label">Wind</span>
+                                                </div>
+                                                <span class="value">${data.wind_speed} m/s</span>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            `;
+                        }
+                        // Fade in & Slide up
+                        resultContainer.classList.add('visible');
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        submitBtn.disabled = false;
+                        submitBtn.classList.remove('loading');
+                        btnText.textContent = 'Discover';
+                        
+                        resultContainer.innerHTML = `<p class="error-msg"><i class="ph-light ph-warning"></i>Failed to retrieve data.</p>`;
+                        resultContainer.classList.add('visible');
+                    });
+            }, 400); // Small delay to allow fade out and show loading state seamlessly
         });
     </script>
-
-
-
-
 </body>
 </html>
