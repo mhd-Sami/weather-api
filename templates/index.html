@@ -39,6 +39,7 @@
             align-items: center;
             position: relative;
             overflow-x: hidden;
+            animation: fadeIn 0.8s ease-out;
         }
 
         /* Ambient Glow Effect - tuned for light mode */
@@ -53,6 +54,23 @@
             background: radial-gradient(circle, rgba(156, 108, 66, 0.04) 0%, rgba(242, 239, 233, 0) 70%);
             z-index: 0;
             pointer-events: none;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-8px); }
+            100% { transform: translateY(0px); }
         }
 
         /* Glassy Header, non-sticky */
@@ -92,6 +110,7 @@
         .logo i {
             color: var(--accent);
             font-size: 2rem;
+            animation: float 4s ease-in-out infinite;
         }
 
         main {
@@ -101,6 +120,7 @@
             flex-grow: 1;
             position: relative;
             z-index: 1;
+            animation: fadeInUp 0.8s ease-out 0.2s both;
         }
 
         .search-section {
@@ -167,7 +187,7 @@
             left: 0;
             font-size: 1.4rem;
             color: var(--text-muted);
-            transition: color 0.3s ease;
+            transition: color 0.3s ease, transform 0.3s ease;
         }
 
         .input-group input {
@@ -195,6 +215,7 @@
 
         .input-group input:focus + i, .input-group input:not(:placeholder-shown) + i {
             color: var(--accent);
+            transform: scale(1.1);
         }
 
         button {
@@ -209,12 +230,13 @@
             letter-spacing: 0.05em;
             cursor: pointer;
             transition: all 0.3s ease;
-            border-radius: 2px;
+            border-radius: 4px;
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 10px;
             height: 47px; /* Align with input */
+            box-shadow: 0 2px 5px rgba(0,0,0,0);
         }
 
         @media (min-width: 480px) {
@@ -227,6 +249,8 @@
             background: var(--text-main);
             color: var(--bg-color);
             border-color: var(--text-main);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
         }
         
         button:disabled {
@@ -282,6 +306,7 @@
             display: flex;
             flex-direction: column;
             gap: 15px;
+            animation: fadeInUp 0.6s ease-out both;
         }
 
         .weather-condition-icon {
@@ -289,6 +314,7 @@
             color: var(--accent);
             opacity: 0.95;
             margin-bottom: 10px;
+            animation: float 4s ease-in-out infinite;
         }
 
         .weather-city {
@@ -305,6 +331,10 @@
             text-transform: capitalize;
             font-family: 'Cormorant Garamond', serif;
             font-style: italic;
+        }
+
+        .weather-metrics {
+            animation: fadeInUp 0.6s ease-out 0.2s both;
         }
 
         .metrics-title {
@@ -328,12 +358,14 @@
             align-items: center;
             padding: 24px 0;
             border-bottom: 1px solid var(--border-color);
-            transition: background-color 0.3s ease, padding-left 0.3s ease;
+            transition: background-color 0.3s ease, padding-left 0.3s ease, border-color 0.3s ease, transform 0.3s ease;
         }
         
         .weather-list li:hover {
-            background-color: rgba(0, 0, 0, 0.02);
-            padding-left: 10px;
+            background-color: rgba(0, 0, 0, 0.015);
+            padding-left: 15px;
+            padding-right: 10px;
+            border-bottom-color: var(--accent);
         }
 
         .weather-list .label-wrap {
